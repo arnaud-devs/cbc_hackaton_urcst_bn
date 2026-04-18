@@ -88,19 +88,14 @@ export const createBooking = async (req: Request, res: Response) => {
       clientLanguage, clientAddress, clientDetail, date, timeSlot,
     } = req.body;
 
-    const doctor = await prisma.doctor.findUnique({
-      where: { id: doctorId },
-      include: { services: { select: { id: true } } },
-    });
-
-    const service = await prisma.service.findUnique({ where: { id: serviceId } });
+    const [service, doctor] = await Promise.all([
+      prisma.service.findUnique({ where: { id: serviceId } }),
+      prisma.doctor.findUnique({ where: { id: doctorId } }),
+    ]);
 
     if (!service || !service.isActive) throw new CustomError("Service not found or inactive", 404);
     if (!doctor) throw new CustomError("Doctor not found", 404);
     if (!doctor.isAvailable) throw new CustomError("Doctor is currently unavailable", 409);
-
-    const offersService = doctor.services.some((s) => s.id === serviceId);
-    if (!offersService) throw new CustomError("This doctor does not offer the selected service", 400);
 
     const bookingDate = new Date(date + "T00:00:00.000Z");
 

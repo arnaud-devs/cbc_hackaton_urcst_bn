@@ -21,5 +21,5 @@ export const createArticleSchema = z.object({
 });
 
 export const assignServicesSchema = z.object({
-  serviceIds: z.array(z.string().uuid("Each serviceId must be a valid UUID")).min(1, "At least one service is required"),
+  serviceIds: z.array(z.string().min(1)).min(1, "At least one service is required"),
 });
