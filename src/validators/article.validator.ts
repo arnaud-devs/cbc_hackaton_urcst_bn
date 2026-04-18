@@ -1,16 +1,9 @@
-import { ArticleStatus } from "@prisma/client";
-import Joi from "joi";
+import { z } from "zod";
 
-export const postArticleSchema = Joi.object({
-  title: Joi.string(),
-  coverPhoto: Joi.string(),
-  content: Joi.string(),
-  categories: Joi.array().items(Joi.string()).min(1),
-  status: Joi.string().valid(...Object.values(ArticleStatus)),
-})
-  .options({ presence: "required" })
-  .required();
+export const createArticleSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  content: z.string().min(20, "Content must be at least 20 characters"),
+  category: z.string().min(2, "Category is required"),
+});
 
-export const patchArticleSchema = postArticleSchema
-  .options({ presence: "optional" })
-  .optional();
+export const updateArticleSchema = createArticleSchema.partial();

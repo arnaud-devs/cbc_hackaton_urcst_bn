@@ -1,28 +1,9 @@
 import { Router } from "express";
-import {
-  getArticle,
-  getArticles,
-  postArticle,
-  patchArticle,
-} from "../controllers/article.controller";
-import {
-  patchArticleSchema,
-  postArticleSchema,
-} from "../validators/article.validator";
-import { validate } from "../middlewares/validate.middleware";
+import { getPublicArticles, getPublicArticle } from "../controllers/article.controller";
 
 const articleRoutes = Router();
 
-// Fetching all article and creation of new article
-articleRoutes
-  .route("/")
-  .get(getArticles)
-  .post(validate(postArticleSchema), postArticle);
-
-// Fetch single article
-articleRoutes.get("/:id", getArticle);
-
-// Updating existing article
-articleRoutes.patch("/:id", validate(patchArticleSchema), patchArticle);
+articleRoutes.get("/", getPublicArticles);
+articleRoutes.get("/:id", getPublicArticle);
 
 export default articleRoutes;

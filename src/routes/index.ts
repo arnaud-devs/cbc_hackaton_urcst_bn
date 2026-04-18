@@ -1,22 +1,22 @@
 import { Router } from "express";
+import authRoutes from "./auth.route";
+import adminRoutes from "./admin.route";
+import doctorRoutes from "./doctor.route";
+import clientRoutes from "./client.route";
+import chatRoutes from "./chat.route";
 import articleRoutes from "./article.route";
-import clinicRoutes from "./clinic.route";
 
 const router = Router();
 
-const routes: Array<{ path: string; route: Router }> = [
-  { path: "article", route: articleRoutes },
-  { path: "clinics", route: clinicRoutes },
-];
+router.use("/api/auth", authRoutes);
+router.use("/api/admin", adminRoutes);
+router.use("/api/doctor", doctorRoutes);
+router.use("/api", clientRoutes);
+router.use("/api/chat", chatRoutes);
+router.use("/api/articles", articleRoutes);
 
-routes.forEach(({ path, route }) => {
-  router.use(`/api/${path}`, route);
-});
-
-// Api health check route
 router.get("/api/health", (req, res) => {
   res.status(200).json({ message: "API is running smoothly" });
 });
 
-// Global error handler
 export default router;

@@ -1,24 +1,37 @@
 import express from "express";
-import routes from "./routes/index";
+import helmet from "helmet";
+import cors from "cors";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import yaml from "js-yaml";
+import fs from "fs";
+import path from "path";
+import routes from "./routes/index";
 import config from "./config/config";
 import errorHandler from "./middlewares/error-handler.middleware";
-import cors from "cors";
-
-
 
 const app = express();
 
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
+app.use(cors({ origin: config.clientUrl || "*", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-// Request logger
 app.use(morgan(config.nodeEnv === "development" ? "dev" : "combined"));
 
-// App Routes
+// ─── Swagger docs (/api/docs) ─────────────────────────────────────────────────
+const swaggerDoc = yaml.load(
+  fs.readFileSync(path.join(__dirname, "docs/swagger.yaml"), "utf8")
+) as object;
+
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
+// ─── API routes ───────────────────────────────────────────────────────────────
 app.use(routes);
 
-// Global error handler
 app.use(errorHandler);
 
 export default app;
