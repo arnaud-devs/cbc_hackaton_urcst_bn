@@ -16,8 +16,8 @@ const clientRoutes = Router();
 
 // Doctors — public
 clientRoutes.get("/doctors", getPublicDoctors);
-clientRoutes.get("/doctors/:id", getPublicDoctorById);
 clientRoutes.get("/doctors/available", getAvailableDoctors);
+clientRoutes.get("/doctors/:id", getPublicDoctorById);
 
 // Services — public
 clientRoutes.get("/services", getServices);
