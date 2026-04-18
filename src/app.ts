@@ -23,8 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan(config.nodeEnv === "development" ? "dev" : "combined"));
 
 // ─── Swagger docs (/api/docs) ─────────────────────────────────────────────────
+const swaggerPath = path.join(__dirname, "../src/docs/swagger.yaml");
 const swaggerDoc = yaml.load(
-  fs.readFileSync(path.join(__dirname, "docs/swagger.yaml"), "utf8")
+  fs.readFileSync(
+    fs.existsSync(swaggerPath) ? swaggerPath : path.join(__dirname, "docs/swagger.yaml"),
+    "utf8"
+  )
 ) as object;
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
