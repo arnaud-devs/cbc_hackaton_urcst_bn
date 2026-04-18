@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { validateZod } from "../middlewares/validate.middleware";
 import {
+  getPublicDoctors,
+  getPublicDoctorById,
   getServices,
   getAvailableDoctors,
   createBooking,
@@ -12,10 +14,19 @@ import { createFeedbackSchema } from "../validators/feedback.validator";
 
 const clientRoutes = Router();
 
-clientRoutes.get("/services", getServices);
+// Doctors — public
+clientRoutes.get("/doctors", getPublicDoctors);
+clientRoutes.get("/doctors/:id", getPublicDoctorById);
 clientRoutes.get("/doctors/available", getAvailableDoctors);
+
+// Services — public
+clientRoutes.get("/services", getServices);
+
+// Bookings — anonymous
 clientRoutes.post("/bookings", validateZod(createBookingSchema), createBooking);
 clientRoutes.get("/bookings/:id", getBookingById);
+
+// Feedback — anonymous
 clientRoutes.post("/feedback", validateZod(createFeedbackSchema), submitFeedback);
 
 export default clientRoutes;

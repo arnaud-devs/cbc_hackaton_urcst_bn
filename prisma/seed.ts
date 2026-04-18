@@ -75,6 +75,12 @@ async function main() {
         specialty: "HIV/AIDS & Infectious Diseases",
         languages: ["English", "Kinyarwanda", "French"],
         phone: "+250788000001",
+        services: {
+          connect: [
+            { id: "11111111-1111-1111-1111-111111111111" }, // HIV/STI Testing
+            { id: "44444444-4444-4444-4444-444444444444" }, // General Check-up
+          ],
+        },
       },
     }),
     prisma.doctor.upsert({
@@ -87,6 +93,11 @@ async function main() {
         specialty: "Psychiatry & Mental Health",
         languages: ["French", "Kinyarwanda"],
         phone: "+250788000002",
+        services: {
+          connect: [
+            { id: "33333333-3333-3333-3333-333333333333" }, // Mental Health
+          ],
+        },
       },
     }),
     prisma.doctor.upsert({
@@ -99,6 +110,12 @@ async function main() {
         specialty: "General Practice & Reproductive Health",
         languages: ["English", "French", "Kinyarwanda"],
         phone: "+250788000003",
+        services: {
+          connect: [
+            { id: "22222222-2222-2222-2222-222222222222" }, // Family Planning
+            { id: "44444444-4444-4444-4444-444444444444" }, // General Check-up
+          ],
+        },
       },
     }),
   ]);

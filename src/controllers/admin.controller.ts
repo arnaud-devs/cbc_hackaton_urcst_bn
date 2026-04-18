@@ -75,10 +75,50 @@ export const getDoctors = async (req: Request, res: Response) => {
       select: {
         id: true, email: true, name: true, specialty: true, languages: true,
         phone: true, isAvailable: true, rating: true, totalSessions: true, createdAt: true,
+        services: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: "desc" },
     });
     res.json({ status: "success", data: doctors });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const assignDoctorServices = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { serviceIds } = req.body;
+
+    const doctor = await prisma.doctor.findUnique({ where: { id } });
+    if (!doctor) throw new CustomError("Doctor not found", 404);
+
+    const updated = await prisma.doctor.update({
+      where: { id },
+      data: { services: { set: serviceIds.map((sid: string) => ({ id: sid })) } },
+      select: {
+        id: true, name: true,
+        services: { select: { id: true, name: true } },
+      },
+    });
+
+    res.json({ status: "success", message: "Services assigned to doctor", data: updated });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getDoctorServices = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const doctor = await prisma.doctor.findUnique({
+      where: { id },
+      select: { id: true, name: true, services: true },
+    });
+    if (!doctor) throw new CustomError("Doctor not found", 404);
+
+    res.json({ status: "success", data: doctor });
   } catch (error) {
     throw error;
   }

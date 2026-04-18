@@ -2,10 +2,10 @@ import { z } from "zod";
 import { VALID_SLOTS } from "../utils/slots";
 
 export const createBookingSchema = z.object({
-  serviceId: z.string().uuid("Invalid service ID"),
-  doctorId: z.string().uuid("Invalid doctor ID"),
+  serviceId: z.string().min(1, "Service ID is required"),
+  doctorId: z.string().min(1, "Doctor ID is required"),
   clientPhone: z.string().min(8, "Phone number is required"),
-  clientAge: z.number().int().min(10).max(100, "Age must be between 10 and 100"),
+  clientAge: z.coerce.number().int().min(10).max(100, "Age must be between 10 and 100"),
   clientSex: z.enum(["male", "female", "other"], {
     message: "clientSex must be male, female, or other",
   }),

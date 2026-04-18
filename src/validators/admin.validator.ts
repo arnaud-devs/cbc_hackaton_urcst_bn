@@ -19,3 +19,7 @@ export const createArticleSchema = z.object({
   content: z.string().min(20, "Content must be at least 20 characters"),
   category: z.string().min(2, "Category is required"),
 });
+
+export const assignServicesSchema = z.object({
+  serviceIds: z.array(z.string().uuid("Each serviceId must be a valid UUID")).min(1, "At least one service is required"),
+});

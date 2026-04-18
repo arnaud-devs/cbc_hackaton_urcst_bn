@@ -6,6 +6,8 @@ import {
   createDoctor,
   getDoctors,
   deleteDoctor,
+  assignDoctorServices,
+  getDoctorServices,
   getAdminBookings,
   getChatLogs,
   createAdminArticle,
@@ -15,7 +17,7 @@ import {
   getAdminServices,
   deleteService,
 } from "../controllers/admin.controller";
-import { createDoctorSchema, createServiceSchema, createArticleSchema } from "../validators/admin.validator";
+import { createDoctorSchema, createServiceSchema, createArticleSchema, assignServicesSchema } from "../validators/admin.validator";
 
 const adminRoutes = Router();
 
@@ -25,6 +27,8 @@ adminRoutes.get("/dashboard", getDashboard);
 
 adminRoutes.route("/doctors").get(getDoctors).post(validateZod(createDoctorSchema), createDoctor);
 adminRoutes.delete("/doctors/:id", deleteDoctor);
+adminRoutes.get("/doctors/:id/services", getDoctorServices);
+adminRoutes.put("/doctors/:id/services", validateZod(assignServicesSchema), assignDoctorServices);
 
 adminRoutes.get("/bookings", getAdminBookings);
 adminRoutes.get("/chatlogs", getChatLogs);

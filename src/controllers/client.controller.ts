@@ -4,6 +4,40 @@ import { CustomError } from "../utils/CustomError";
 import { generateBookingId } from "../utils/bookingId";
 import { VALID_SLOTS } from "../utils/slots";
 
+export const getPublicDoctors = async (req: Request, res: Response) => {
+  try {
+    const doctors = await prisma.doctor.findMany({
+      select: {
+        id: true, name: true, specialty: true, languages: true,
+        isAvailable: true, rating: true, totalSessions: true,
+        services: { select: { id: true, name: true, durationMinutes: true } },
+      },
+      orderBy: { name: "asc" },
+    });
+    res.json({ status: "success", data: doctors });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPublicDoctorById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const doctor = await prisma.doctor.findUnique({
+      where: { id },
+      select: {
+        id: true, name: true, specialty: true, languages: true,
+        isAvailable: true, rating: true, totalSessions: true,
+        services: { select: { id: true, name: true, durationMinutes: true } },
+      },
+    });
+    if (!doctor) throw new CustomError("Doctor not found", 404);
+    res.json({ status: "success", data: doctor });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getServices = async (req: Request, res: Response) => {
   try {
     const services = await prisma.service.findMany({
@@ -26,6 +60,7 @@ export const getAvailableDoctors = async (req: Request, res: Response) => {
       select: {
         id: true, name: true, specialty: true, languages: true,
         rating: true, totalSessions: true,
+        services: { select: { id: true, name: true, durationMinutes: true } },
         bookings: {
           where: { date: todayDate },
           select: { timeSlot: true },
@@ -53,14 +88,19 @@ export const createBooking = async (req: Request, res: Response) => {
       clientLanguage, clientAddress, clientDetail, date, timeSlot,
     } = req.body;
 
-    const [service, doctor] = await Promise.all([
-      prisma.service.findUnique({ where: { id: serviceId } }),
-      prisma.doctor.findUnique({ where: { id: doctorId } }),
-    ]);
+    const doctor = await prisma.doctor.findUnique({
+      where: { id: doctorId },
+      include: { services: { select: { id: true } } },
+    });
+
+    const service = await prisma.service.findUnique({ where: { id: serviceId } });
 
     if (!service || !service.isActive) throw new CustomError("Service not found or inactive", 404);
     if (!doctor) throw new CustomError("Doctor not found", 404);
     if (!doctor.isAvailable) throw new CustomError("Doctor is currently unavailable", 409);
+
+    const offersService = doctor.services.some((s) => s.id === serviceId);
+    if (!offersService) throw new CustomError("This doctor does not offer the selected service", 400);
 
     const bookingDate = new Date(date + "T00:00:00.000Z");
 
@@ -105,7 +145,6 @@ export const getBookingById = async (req: Request, res: Response) => {
     });
 
     if (!booking) throw new CustomError("Booking not found", 404);
-
     res.json({ status: "success", data: booking });
   } catch (error) {
     throw error;

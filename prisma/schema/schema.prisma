@@ -31,6 +31,7 @@ model Doctor {
   updatedAt     DateTime   @updatedAt
   bookings      Booking[]
   feedback      Feedback[]
+  services      Service[]
 }
 
 model Service {
@@ -41,6 +42,7 @@ model Service {
   isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
   bookings        Booking[]
+  doctors         Doctor[]
 }
 
 model Booking {
