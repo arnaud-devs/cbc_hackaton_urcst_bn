@@ -1,0 +1,48 @@
+{
+  "name": "huzacare_bn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+      "dev": "nodemon --watch src --ext ts,json --exec \"npx ts-node src/server.ts\"",
+    "lint": "eslint 'src/**/*.ts'",
+    "migrate:deploy": "prisma migrate deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnaud-devs/huzacare_bn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arnaud-devs/huzacare_bn/issues"
+  },
+  "prisma": {
+    "schema": "./prisma/schema/"
+  },
+  "homepage": "https://github.com/arnaud-devs/huzacare_bn#readme",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "joi": "^18.0.1",
+    "morgan": "^1.10.1",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.33.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "prisma": "^6.16.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
