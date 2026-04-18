@@ -9,6 +9,7 @@ const config = {
   clientUrl: process.env.CLIENT_URL,
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET || "your_jwt_secret",
+  anthropicApiKey: process.env.ANTHROPIC_API_KEY || "",
 };
 
 export default config;
